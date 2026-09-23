@@ -41,24 +41,6 @@ st.markdown("""
     margin-top: 15px;
 }
 
-.result-box {
-    padding: 25px;
-    border-radius: 12px;
-    text-align: center;
-    border: 1px solid #cccccc;
-    margin-top: 20px;
-}
-
-.result-title {
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.result-cost {
-    font-size: 38px;
-    font-weight: 700;
-}
-
 .footer {
     text-align: center;
     margin-top: 40px;
@@ -86,7 +68,7 @@ st.markdown(
 st.divider()
 
 # -----------------------------
-# Input section
+# Building Information
 # -----------------------------
 st.markdown(
     '<div class="section-title">📋 Building Information</div>',
@@ -144,7 +126,7 @@ with col6:
 st.divider()
 
 # -----------------------------
-# Prediction button
+# Prediction Button
 # -----------------------------
 predict_button = st.button(
     "🔮 Predict Construction Cost",
@@ -153,7 +135,6 @@ predict_button = st.button(
 
 if predict_button:
 
-    # Create input dataframe
     new_data = pd.DataFrame({
         "Area": [area],
         "Floors": [floors],
@@ -163,7 +144,7 @@ if predict_button:
         "Duration": [duration]
     })
 
-    # Prediction
+    # Predict cost
     predicted_cost = model.predict(new_data)[0]
 
     # Cost per square foot
@@ -172,7 +153,7 @@ if predict_button:
     st.success("Prediction completed successfully!")
 
     # -----------------------------
-    # Result section
+    # Estimated Cost
     # -----------------------------
     st.markdown(
         '<div class="section-title">💰 Estimated Construction Cost</div>',
@@ -194,7 +175,7 @@ if predict_button:
         )
 
     # -----------------------------
-    # Project summary
+    # Project Summary
     # -----------------------------
     st.markdown(
         '<div class="section-title">📌 Project Summary</div>',
@@ -214,7 +195,7 @@ if predict_button:
         st.write(f"**Duration:** {duration} days")
 
     # -----------------------------
-    # Comparison chart
+    # Cost Comparison
     # -----------------------------
     st.markdown(
         '<div class="section-title">📊 Cost Comparison by Area</div>',
@@ -243,14 +224,42 @@ if predict_button:
         chart_data.set_index("Area (sq.ft)")
     )
 
-    # -----------------------------
-    # Information note
-    # -----------------------------
-    st.info(
-        "ℹ️ This result is an ML-based estimate generated from the project's "
-        "training dataset. It should be used for academic/project demonstration "
-        "purposes and not as a final construction quotation."
+# -----------------------------
+# Model Performance
+# -----------------------------
+st.divider()
+
+st.markdown(
+    '<div class="section-title">📊 Model Performance</div>',
+    unsafe_allow_html=True
+)
+
+performance_col1, performance_col2 = st.columns(2)
+
+with performance_col1:
+    st.metric(
+        "R² Score",
+        "0.9843"
     )
+
+with performance_col2:
+    st.metric(
+        "Mean Absolute Error (MAE)",
+        "₹18,812.50"
+    )
+
+st.info(
+    "R² Score of 0.9843 indicates that the model explained about 98.43% "
+    "of the variation in construction cost on the test dataset. "
+    "The MAE of ₹18,812.50 means that the model's predictions differed "
+    "from the actual costs by about ₹18,812 on average on that test set."
+)
+
+st.caption(
+    "Note: The model was evaluated using the project's current dataset "
+    "and test split. These performance values should not be interpreted "
+    "as guaranteed real-world prediction accuracy."
+)
 
 # -----------------------------
 # Footer
